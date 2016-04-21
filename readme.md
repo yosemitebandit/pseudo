@@ -5,19 +5,19 @@ the pseudo language
 First write some pseudcode, preferably in English.
 
 ```
-$ cat some-code.txt
+$ cat primes.pseudo
 
-show a list of primes
-only if they are less than 100
-and if the number is 2, print 'woo!' because that is my lucky number
+for numbers less than 100
+  if the number is prime, print it
+  and if the number is 2, print "woo!" because that's my lucky number
 ```
 
 Then run the compiler, specifying an output language.
-Warning: compilation can be slow and requires an internet connection.
+Warning: compilation requires an internet connection and can be quite slow.
 
 ```shell
-$ pseudoc some-code.txt --lang cpp --outfile some-code.cpp
-$ cat some-code.cpp
+$ pseudoc primes.pseudo --lang cpp --output primes.cpp
+$ cat primes.cpp
 
 #include <stdio.h>
 #include <cmath>
@@ -45,9 +45,17 @@ int main(void) {
 It should compile and run:
 
 ```shell
-$ g++ -o some-code some-code.cpp
-$ ./some-code
+$ g++ -o primes primes.cpp
+$ ./primes
 2 woo! 3 5 7 11 13 17 19 23 29 31 37 41 43 47 53 59 61 67 71 73 79 83 89 97
 ```
 
 If it fails to compile or run, please file an issue!
+
+
+#### gameplan
+* pseudoc is a rust binary that sends the contents of the input file
+and the file's md5 to some endpoint,
+and then it periodically polls that endpoint for a compiled result
+* the server running at the endpoint stores the contents in postgres, keyed by the md5
+* someone logs in to a webapp to view the pseudocode and compile it
