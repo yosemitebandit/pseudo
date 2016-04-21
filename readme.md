@@ -3,9 +3,8 @@ the pseudo language
 
 #### usage
 First write some pseudcode, preferably in English.
-Though the compiler will do it's best to handle languages other than English.
 
-```shell
+```
 $ cat some-code.txt
 
 show a list of primes
@@ -13,7 +12,8 @@ only if they are less than 100
 and if the number is 2, print 'woo!' because that is my lucky number
 ```
 
-Then run the compiler, specifying an output language..warning: it can be slow!
+Then run the compiler, specifying an output language.
+Warning: compilation can be slow and requires an internet connection.
 
 ```shell
 $ pseudoc some-code.txt --lang cpp --outfile some-code.cpp
