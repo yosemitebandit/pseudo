@@ -21,7 +21,7 @@ fn print_usage(program: &str, opts: Options) {
 struct Request {
     contents: String,
     language: String,
-    // Hash is the MD5 of contents + language.
+    // The hash is the MD5 of contents + language.
     hash: String,
 }
 
@@ -48,19 +48,34 @@ fn main() {
     // get the path of the binary
     let program = args[0].clone();
     let mut opts = Options::new();
-    opts.optopt("o", "output", "set output file name", "NAME");
-    opts.optopt("l", "lang", "set output language", "LANG");
+    opts.optopt("o", "output", "set output file name", "OUTPUT");
+    opts.optopt("l", "language", "set output language", "LANGUAGE");
     opts.optflag("h", "help", "print this");
     let matches = match opts.parse(&args[1..]) {
         Ok(m) => m,
-        Err(f) => panic!(f.to_string()),
+        Err(err) => {
+            println!("Error: {}", err);
+            return
+        }
     };
     if matches.opt_present("h") {
         print_usage(&program, opts);
         return;
     }
-    let output = matches.opt_str("o");
-    let language = matches.opt_str("l");
+    let output = match matches.opt_str("o") {
+        Some(v) => v,
+        None => {
+            println!("Error: please specify an output file.");
+            return
+        }
+    };
+    let language = match matches.opt_str("l") {
+        Some(v) => v,
+        None => {
+            println!("Error: please specify a language.");
+            return
+        }
+    };
     let input = if !matches.free.is_empty() {
         // grab any 'free string fragments' if there are any -- this is the input FILE
         matches.free[0].clone()
@@ -79,9 +94,6 @@ fn main() {
         }
     };
 
-    // TODO: this is fragile
-    let language = language.unwrap();
-
     // Get the MD5 of contents + language.
     let mut hasher = Md5::new();
     let hash_input = format!("{}{}", &contents, &language);
@@ -97,6 +109,8 @@ fn main() {
         }
     };
 
+    println!("{}", language);
+    println!("{}", output);
     println!("{}", request);
 
     // send the message
