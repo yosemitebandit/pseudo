@@ -22,11 +22,21 @@ fn print_usage(program: &str, opts: Options) {
 
 
 #[derive(RustcEncodable)]
-struct Request {
+struct CompilerRequest {
     contents: String,
     language: String,
     // The hash is the MD5 of contents + language.
     hash: String,
+}
+
+
+#[derive(RustcDecodable)]
+#[derive(Debug)]
+struct CompilerResponse {
+    compilation_complete: bool,
+    error: bool,
+    error_message: String,
+    compiled_result: String,
 }
 
 
@@ -39,7 +49,7 @@ fn get_file_contents(input_path: &str) -> Result<String, String> {
 
 
 fn compose_request(contents: &str, language: &str, hash: &str) -> Result<String, String> {
-    let request = Request {
+    let request = CompilerRequest {
         contents: contents.to_string(),
         language: language.to_string(),
         hash: hash.to_string(),
@@ -66,6 +76,12 @@ fn http_get(url: &str) -> Result<String, String> {
     let mut body = String::new();
     response.read_to_string(&mut body).unwrap();
     Ok(body)
+}
+
+
+fn decode_response(response: &str) -> Result<CompilerResponse, String> {
+    let response: CompilerResponse = try!(json::decode(&response).map_err(|e| e.to_string()));
+    Ok(response)
 }
 
 
@@ -142,20 +158,26 @@ fn main() {
         Err(err) => println!("Error: {}", err),
     };
 
-    // poll for result..
+    // Poll for result..
     let result_polling_base_url = "http://oakmachine.com";
     let result_polling_url = format!("{}/{}", result_polling_base_url, "neovim");
-    let response = match http_get(&result_polling_url) {
+    let compiler_response = match http_get(&result_polling_url) {
         Ok(response) => {
-            response
-        },
+            match decode_response(&response) {
+                Ok(compiler_response) => compiler_response,
+                Err(err) => {
+                    println!("Decoding error: {}", err);
+                    return;
+                }
+            }
+        }
         Err(err) => {
-            println!("Error: {}", err);
-            return
+            println!("Polling error: {}", err);
+            return;
         }
     };
 
-    println!("{}", response);
+    println!("{:?}", compiler_response);
 
 
     // save output
