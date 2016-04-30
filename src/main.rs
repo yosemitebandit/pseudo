@@ -1,21 +1,25 @@
 extern crate crypto;
 extern crate getopts;
+extern crate hyper;
 extern crate rustc_serialize;
-
-use crypto::md5::Md5;
-use crypto::digest::Digest;
-use getopts::Options;
-use rustc_serialize::json;
+extern crate url;
 
 use std::env;
 use std::fs::File;
 use std::io::Read;
+
+use crypto::md5::Md5;
+use crypto::digest::Digest;
+use getopts::Options;
+use hyper::Client;
+use rustc_serialize::json;
 
 
 fn print_usage(program: &str, opts: Options) {
     let brief = format!("Usage: {} FILE [options]", program);
     print!("{}", opts.usage(&brief));
 }
+
 
 #[derive(RustcEncodable)]
 struct Request {
@@ -25,12 +29,14 @@ struct Request {
     hash: String,
 }
 
+
 fn get_file_contents(input_path: &str) -> Result<String, String> {
     let mut file = try!(File::open(input_path).map_err(|e| e.to_string()));
     let mut contents = String::new();
     try!(file.read_to_string(&mut contents).map_err(|e| e.to_string()));
     Ok(contents.trim().to_owned())
 }
+
 
 fn compose_request(contents: &str, language: &str, hash: &str) -> Result<String, String> {
     let request = Request {
@@ -41,6 +47,27 @@ fn compose_request(contents: &str, language: &str, hash: &str) -> Result<String,
     let encoded = try!(json::encode(&request).map_err(|e| e.to_string()));
     Ok(encoded)
 }
+
+
+fn post_json(url: &str, payload: &str) -> hyper::Result<String> {
+    let client = Client::new();
+    let mut response = try!(client.post(url).body(payload).send());
+    let mut buffer = String::new();
+    try!(response.read_to_string(&mut buffer));
+    Ok(buffer)
+}
+
+
+fn http_get(url: &str) -> Result<String, String> {
+    let client = Client::new();
+    let mut response = client.get(url)
+        .send()
+        .unwrap();
+    let mut body = String::new();
+    response.read_to_string(&mut body).unwrap();
+    Ok(body)
+}
+
 
 fn main() {
     // parse args
@@ -55,7 +82,7 @@ fn main() {
         Ok(m) => m,
         Err(err) => {
             println!("Error: {}", err);
-            return
+            return;
         }
     };
     if matches.opt_present("h") {
@@ -66,14 +93,14 @@ fn main() {
         Some(v) => v,
         None => {
             println!("Error: please specify an output file.");
-            return
+            return;
         }
     };
     let language = match matches.opt_str("l") {
         Some(v) => v,
         None => {
             println!("Error: please specify a language.");
-            return
+            return;
         }
     };
     let input = if !matches.free.is_empty() {
@@ -105,16 +132,32 @@ fn main() {
         Ok(request) => request,
         Err(err) => {
             println!("Error: {}", err);
+            return;
+        }
+    };
+
+    let code_submission_url = "http://requestb.in/oblkqhob";
+    match post_json(&code_submission_url, &request) {
+        Ok(_) => println!("request sent to the cloud compiler.."),
+        Err(err) => println!("Error: {}", err),
+    };
+
+    // poll for result..
+    let result_polling_base_url = "http://oakmachine.com";
+    let result_polling_url = format!("{}/{}", result_polling_base_url, "neovim");
+    let response = match http_get(&result_polling_url) {
+        Ok(response) => {
+            response
+        },
+        Err(err) => {
+            println!("Error: {}", err);
             return
         }
     };
 
-    println!("{}", language);
-    println!("{}", output);
-    println!("{}", request);
+    println!("{}", response);
 
-    // send the message
-    // poll for result..
+
     // save output
     // display result
 }
