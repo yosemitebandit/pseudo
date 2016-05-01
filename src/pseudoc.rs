@@ -4,6 +4,8 @@ extern crate hyper;
 extern crate rustc_serialize;
 extern crate url;
 
+extern crate pseudo;
+
 use std::env;
 use std::fs::File;
 use std::io::Read;
@@ -14,29 +16,12 @@ use getopts::Options;
 use hyper::Client;
 use rustc_serialize::json;
 
+use pseudo::{CompilerRequest, CompilerResponse};
+
 
 fn print_usage(program: &str, opts: Options) {
     let brief = format!("Usage: {} FILE [options]", program);
     print!("{}", opts.usage(&brief));
-}
-
-
-#[derive(RustcEncodable)]
-struct CompilerRequest {
-    contents: String,
-    language: String,
-    // The hash is the MD5 of contents + language.
-    hash: String,
-}
-
-
-#[derive(RustcDecodable)]
-#[derive(Debug)]
-struct CompilerResponse {
-    compilation_complete: bool,
-    error: bool,
-    error_message: String,
-    compiled_result: String,
 }
 
 
