@@ -53,13 +53,11 @@ fn post_json(url: &str, payload: &str) -> hyper::Result<String> {
 }
 
 
-fn http_get(url: &str) -> Result<String, String> {
+fn http_get(url: &str) -> hyper::Result<String> {
     let client = Client::new();
-    let mut response = client.get(url)
-        .send()
-        .unwrap();
+    let mut response = try!(client.get(url).send());
     let mut body = String::new();
-    response.read_to_string(&mut body).unwrap();
+    try!(response.read_to_string(&mut body));
     Ok(body)
 }
 
@@ -140,7 +138,10 @@ fn main() {
     let code_submission_url = "http://localhost:6767";
     match post_json(&code_submission_url, &request) {
         Ok(_) => println!("request sent to the cloud compiler.."),
-        Err(err) => println!("Error: {}", err),
+        Err(err) => {
+            println!("Error: {}", err);
+            return;
+        }
     };
 
     // Poll for result..

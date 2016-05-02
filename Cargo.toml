@@ -11,17 +11,3 @@ rust-crypto = "*"
 rustc-serialize = "*"
 url = "*"
 nickel = "*"
-
-
-[lib]
-name = "pseudo"
-
-
-[[bin]]
-name = "pseudoc"
-path = "src/pseudoc.rs"
-
-
-[[bin]]
-name = "pseudo_server"
-path = "src/server.rs"
