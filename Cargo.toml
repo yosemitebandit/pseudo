@@ -10,6 +10,8 @@ hyper = "0.9.1"
 rust-crypto = "0.2.35"
 rustc-serialize = "0.3.19"
 url = "1.0.0"
+nickel = "*"
+
 
 
 [lib]
