@@ -137,15 +137,15 @@ fn main() {
         }
     };
 
-    let code_submission_url = "http://requestb.in/oblkqhob";
+    let code_submission_url = "http://localhost:6767";
     match post_json(&code_submission_url, &request) {
         Ok(_) => println!("request sent to the cloud compiler.."),
         Err(err) => println!("Error: {}", err),
     };
 
     // Poll for result..
-    let result_polling_base_url = "http://oakmachine.com";
-    let result_polling_url = format!("{}/{}", result_polling_base_url, "neovim");
+    let result_polling_base_url = "http://localhost:6767";
+    let result_polling_url = format!("{}/{}", result_polling_base_url, hash);
     let compiler_response = match http_get(&result_polling_url) {
         Ok(response) => {
             match decode_response(&response) {

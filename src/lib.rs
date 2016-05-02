@@ -1,7 +1,8 @@
 extern crate rustc_serialize;
 
 
-#[derive(RustcEncodable)]
+#[derive(RustcEncodable, RustcDecodable)]
+#[derive(Debug)]
 pub struct CompilerRequest {
 	pub contents: String,
 	pub language: String,
@@ -10,7 +11,7 @@ pub struct CompilerRequest {
 }
 
 
-#[derive(RustcDecodable)]
+#[derive(RustcDecodable, RustcEncodable)]
 #[derive(Debug)]
 pub struct CompilerResponse {
 	pub compilation_complete: bool,
