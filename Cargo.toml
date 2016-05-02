@@ -5,13 +5,12 @@ authors = ["Matt Ball <matt.ball.2@gmail.com>"]
 
 
 [dependencies]
-getopts = "0.2"
-hyper = "0.9.1"
-rust-crypto = "0.2.35"
-rustc-serialize = "0.3.19"
-url = "1.0.0"
+getopts = "*"
+hyper = "*"
+rust-crypto = "*"
+rustc-serialize = "*"
+url = "*"
 nickel = "*"
-
 
 
 [lib]
