@@ -59,3 +59,8 @@ and the file's md5 to some endpoint,
 and then it periodically polls that endpoint for a compiled result
 * the server running at the endpoint stores the contents in postgres, keyed by the md5
 * someone logs in to a webapp to view the pseudocode and compile it
+
+
+#### setup
+* you need a `.env` file -- see `.example.env`
+* run `diesel setup` to build the databases and run migrations
