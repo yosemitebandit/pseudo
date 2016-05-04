@@ -17,7 +17,8 @@ for numbers less than 100
 ```
 
 Then run the compiler, specifying an output language.
-Warning: compilation requires an internet connection and can be quite slow.
+Warning: compilation requires an internet connection,
+are not guaranteed to be deterministic and can be quite slow.
 
 ```shell
 $ pseudoc primes.pseudo --lang cpp --output primes.cpp
@@ -58,13 +59,12 @@ If it fails to compile or run, please file an issue!
 
 
 #### gameplan
-* pseudoc is a rust binary that sends the contents of the input file
+* `pseudoc` is a sends the contents of the input file
 and the file's md5 to some endpoint,
 and then it periodically polls that endpoint for a compiled result
-* the server running at the endpoint stores the contents in postgres, keyed by the md5
-* someone logs in to a webapp to view the pseudocode and compile it
+* `pseudo_server` receives the posted data and responds with results
 
 
 #### setup
 * you need a `.env` file -- see `.example.env`
-* run `diesel setup` to build the databases and run migrations
+* run `diesel database setup` to build the databases and run migrations
