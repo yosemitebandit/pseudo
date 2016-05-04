@@ -1,7 +1,7 @@
 use diesel::pg::data_types::PgTimestamp;
 
 
-#[derive(Debug, Queryable)]
+#[derive(Clone, Debug, Queryable)]
 pub struct Submission {
 	pub id: i32,
 
@@ -14,7 +14,7 @@ pub struct Submission {
 	pub compiled_at: Option<PgTimestamp>,
 	pub compiled_result: Option<String>,
 	pub compilation_error: Option<bool>,
-	pub compilation_error_text: Option<String>,
+	pub compilation_error_message: Option<String>,
 }
 
 

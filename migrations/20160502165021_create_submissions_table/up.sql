@@ -10,5 +10,5 @@ CREATE TABLE submissions (
   compiled_at TIMESTAMP,
   compiled_result TEXT,
   compilation_error BOOLEAN,
-  compilation_error_text TEXT
+  compilation_error_message TEXT
 )
