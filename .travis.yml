@@ -3,7 +3,7 @@ rust:
   - nightly-2016-04-09
 
 services:
-  - postgres
+  - postgresql
 
 env:
   DATABASE_URL=postgres://postgres@localhost/
