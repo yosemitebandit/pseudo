@@ -6,13 +6,11 @@ services:
   - postgresql
 
 env:
-  DATABASE_URL=postgres://postgres@localhost/
+  DATABASE_URL=postgres://postgres@localhost/pseudo_lang
 
 before_script:
+  - cargo --version
+  - rustc --version
+  - whoami
   - cargo install diesel_cli --verbose
   - diesel database setup
-
-addons:
-  apt:
-    packages:
-      - libsqlite3-dev
