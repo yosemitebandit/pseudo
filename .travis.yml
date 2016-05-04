@@ -9,8 +9,11 @@ env:
   DATABASE_URL=postgres://postgres@localhost/pseudo_lang
 
 before_script:
-  - cargo --version
   - rustc --version
-  - whoami
+  - cargo --version
+  - sudo apt-get -qq update
+  - sqlite3 --version
+  - sudo apt-get upgrade sqlite3 libsqlite3-dev
+  - sqlite3 --version
   - cargo install diesel_cli --verbose
   - diesel database setup
