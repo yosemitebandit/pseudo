@@ -1,6 +1,8 @@
 the pseudo language
 
-[![Build Status](https://travis-ci.org/yosemitebandit/pseudo.svg?branch=master)](https://travis-ci.org/yosemitebandit/pseudo)
+[![Travis build status](https://travis-ci.org/yosemitebandit/pseudo.svg?branch=master)](https://travis-ci.org/yosemitebandit/pseudo)
+[![Appveyor build status](https://ci.appveyor.com/api/projects/status/mmky10ccdp303y7h?svg=true)](https://ci.appveyor.com/project/yosemitebandit/pseudo)
+
 
 
 #### usage
