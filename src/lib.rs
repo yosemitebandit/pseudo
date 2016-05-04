@@ -13,6 +13,8 @@ use diesel::pg::PgConnection;
 use dotenv::dotenv;
 use std::env;
 
+use self::models::{Submission, NewSubmission};
+
 
 #[derive(RustcEncodable, RustcDecodable)]
 #[derive(Debug)]
@@ -41,4 +43,17 @@ pub fn establish_connection() -> PgConnection {
 		.expect("need to set DATABASE_URL in .env");
 	PgConnection::establish(&database_url)
 		.expect(&format!("error connecting to {}", database_url))
+}
+
+
+pub fn create_submission<'a>(connection: &PgConnection, contents: &'a str, language: &'a str, hash: &'a str) -> Submission {
+	use schema::submissions;
+	let new_submission = NewSubmission {
+		submitted_contents: contents,
+		submitted_language: language,
+		submission_hash: hash,
+	};
+	diesel::insert(&new_submission).into(submissions::table)
+		.get_result(connection)
+		.expect("error saving new submission")
 }
