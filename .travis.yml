@@ -4,10 +4,11 @@ rust:
 
 services:
   - postgresql
+  - sqlite3
 
 env:
   DATABASE_URL=postgres://postgres@localhost/
 
 before_script:
-  - cargo install diesel_cli
+  - cargo install diesel_cli --verbose
   - diesel database setup
