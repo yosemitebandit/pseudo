@@ -9,6 +9,8 @@ extern crate pseudo;
 use std::env;
 use std::fs::File;
 use std::io::Read;
+use std::thread::sleep;
+use std::time::Duration;
 
 use crypto::md5::Md5;
 use crypto::digest::Digest;
@@ -147,23 +149,29 @@ fn main() {
     // Poll for result..
     let result_polling_base_url = "http://localhost:6767";
     let result_polling_url = format!("{}/{}", result_polling_base_url, hash);
-    let compiler_response = match http_get(&result_polling_url) {
-        Ok(response) => {
-            match decode_response(&response) {
-                Ok(compiler_response) => compiler_response,
-                Err(err) => {
-                    println!("Decoding error: {}", err);
-                    return;
+    loop {
+        let compiler_response = match http_get(&result_polling_url) {
+            Ok(response) => {
+                match decode_response(&response) {
+                    Ok(compiler_response) => compiler_response,
+                    Err(err) => {
+                        println!("Decoding error: {}", err);
+                        return;
+                    }
                 }
             }
-        }
-        Err(err) => {
-            println!("Polling error: {}", err);
+            Err(err) => {
+                println!("Polling error: {}", err);
+                return;
+            }
+        };
+        if compiler_response.compilation_complete {
+            println!("{:?}", compiler_response);
             return;
         }
-    };
+        sleep(Duration::from_secs(10));
+    }
 
-    println!("{:?}", compiler_response);
 
 
     // save output
