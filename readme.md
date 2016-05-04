@@ -21,7 +21,7 @@ Warning: compilation requires an internet connection,
 are not guaranteed to be deterministic and can be quite slow.
 
 ```shell
-$ pseudoc primes.pseudo --lang cpp --output primes.cpp
+$ pseudoc primes.pseudo --language cpp --output primes.cpp
 $ cat primes.cpp
 
 #include <stdio.h>
