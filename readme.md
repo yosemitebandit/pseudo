@@ -1,5 +1,7 @@
 the pseudo language
 
+[![Build Status](https://travis-ci.org/yosemitebandit/pseudo.svg?branch=master)](https://travis-ci.org/yosemitebandit/pseudo)
+
 
 #### usage
 First write some pseudcode, preferably in English.
