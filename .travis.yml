@@ -4,7 +4,6 @@ dist: trusty
 language: rust
 rust:
   - nightly-2016-04-09
-cache: cargo
 
 services:
   - postgresql
@@ -13,9 +12,8 @@ env:
   DATABASE_URL=postgres://postgres@localhost/pseudo_lang
 
 before_script:
-  - lsb_release -a
-  - rustc --version
-  - cargo --version
+  - rustc -vV
+  - cargo -vV
   - cargo install diesel_cli --verbose
   - export PATH=$PATH:/home/travis/.cargo/bin
   - diesel database setup
