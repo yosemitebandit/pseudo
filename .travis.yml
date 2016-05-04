@@ -15,9 +15,6 @@ before_script:
   - lsb_release -a
   - rustc --version
   - cargo --version
-  - sudo apt-get -qq update
-  - sqlite3 --version
-  - sudo apt-get install --only-upgrade sqlite3 libsqlite3-dev
-  - sqlite3 --version
   - cargo install diesel_cli --verbose
+  - export PATH=$PATH:/home/travis/.cargo/bin
   - diesel database setup
