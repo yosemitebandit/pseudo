@@ -15,5 +15,5 @@ fn main() {
 		.load::<Submission>(&connection)
 		.expect("error loading submissions");
 
-	println!("displaying {} submissions", results.len());
+	println!("submissions in db: {}", results.len());
 }
