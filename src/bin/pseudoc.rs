@@ -9,7 +9,8 @@ extern crate pseudo;
 
 use std::env;
 use std::fs::File;
-use std::io::Read;
+use std::io::prelude::*;
+use std::path::Path;
 use std::thread::sleep;
 use std::time::Duration;
 
@@ -77,6 +78,14 @@ fn decode_response(response: &str) -> Result<CompilerResponse, String> {
 }
 
 
+fn write_file_contents(output_path: &str, contents: &str) -> Result<String, String> {
+    let output_path = Path::new(output_path);
+    let mut file = try!(File::create(output_path).map_err(|e| e.to_string()));
+    try!(file.write_all(contents.as_bytes()).map_err(|e| e.to_string()));
+    Ok("ok".to_string())
+}
+
+
 fn main() {
     // Set the base url based on an env var or use the default.
     dotenv().ok();
@@ -85,9 +94,9 @@ fn main() {
         Err(_) => DEFAULT_BASE_URL.to_string(),
     };
 
-    // parse args
+    // Parse args.
     let args: Vec<String> = env::args().collect();
-    // get the path of the binary
+    // Get the path of the binary.
     let program = args[0].clone();
     let mut opts = Options::new();
     opts.optopt("o", "output", "set output file name", "OUTPUT");
@@ -119,15 +128,15 @@ fn main() {
         }
     };
     let input = if !matches.free.is_empty() {
-        // grab any 'free string fragments' if there are any -- this is the input FILE
+        // Grab any 'free string fragments' if there are any -- this is the input FILE.
         matches.free[0].clone()
     } else {
-        // if there aren't any string fragments, the program wasn't run correctly
+        // If there aren't any string fragments, the program wasn't run correctly.
         print_usage(&program, opts);
         return;
     };
 
-    // read file contents
+    // Read file contents.
     let contents = match get_file_contents(&input) {
         Ok(contents) => contents,
         Err(err) => {
@@ -153,14 +162,16 @@ fn main() {
 
     let code_submission_url = format!("{}/{}", &base_url, COMPILE_ROUTE);
     match post_json(&code_submission_url, &request) {
-        Ok(_) => println!("request sent to the cloud compiler.."),
+        Ok(_) => {
+            //println!("request sent to the cloud compiler..")
+        },
         Err(err) => {
             println!("Error: {}", err);
             return;
         }
     };
 
-    // Poll for result..
+    // Poll for result.
     let result_polling_url = format!("{}/{}/{}", &base_url, COMPILE_ROUTE, hash);
     loop {
         let compiler_response = match http_get(&result_polling_url) {
@@ -179,12 +190,22 @@ fn main() {
             }
         };
         if compiler_response.compilation_complete {
-            return;
+            // Show any errors.
+            if compiler_response.error {
+                println!("Compiler error: {}", compiler_response.error_message);
+                return;
+            }
+            // Save output.
+            match write_file_contents(&output, &compiler_response.compiled_result) {
+                Ok(_) => return,
+                Err(err) => {
+                    println!("File save error: {}", err);
+                    return
+                }
+            }
+
         }
+
         sleep(Duration::from_secs(SECONDS_TO_SLEEP as u64));
     }
-
-
-    // save output
-    // display result
 }
