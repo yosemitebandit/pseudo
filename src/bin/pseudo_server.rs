@@ -30,8 +30,10 @@ use self::diesel::prelude::*;
 fn main() {
 	let mut server = Nickel::new();
 
-	server.get("/", middleware! {
-		"it's pseudo-lang!"
+	server.get("/", middleware! { |_, mut response|
+		let mut data = HashMap::new();
+		data.insert("submissions", "");
+		return response.render("assets/index.tpl", &data);
 	});
 
 	server.post("/compile", middleware! { |request|
@@ -61,13 +63,13 @@ fn main() {
 
 		if results.len() == 1 {
 			let submission = results[0].clone();
-			let response = CompilerResponse {
+			let compiler_response = CompilerResponse {
 				compilation_complete: submission.compilation_complete,
 				compiled_result: submission.compiled_result.unwrap_or("".to_string()),
 				error: submission.compilation_error.unwrap_or(false),
 				error_message: submission.compilation_error_message.unwrap_or("".to_string()),
 			};
-			let encoded = json::encode(&response).unwrap();
+			let encoded = json::encode(&compiler_response).unwrap();
 			encoded
 		} else if results.len() == 0 {
 			"404".to_string()
