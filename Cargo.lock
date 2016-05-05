@@ -8,7 +8,7 @@ dependencies = [
  "dotenv_macros 0.8.0 (registry+https://github.com/rust-lang/crates.io-index)",
  "getopts 0.2.14 (registry+https://github.com/rust-lang/crates.io-index)",
  "hyper 0.9.2 (registry+https://github.com/rust-lang/crates.io-index)",
- "nickel 0.8.0 (registry+https://github.com/rust-lang/crates.io-index)",
+ "nickel 0.8.0 (git+https://github.com/nickel-org/nickel.rs)",
  "rust-crypto 0.2.35 (registry+https://github.com/rust-lang/crates.io-index)",
  "rustc-serialize 0.3.19 (registry+https://github.com/rust-lang/crates.io-index)",
  "url 1.1.0 (registry+https://github.com/rust-lang/crates.io-index)",
@@ -257,7 +257,7 @@ dependencies = [
 [[package]]
 name = "nickel"
 version = "0.8.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
+source = "git+https://github.com/nickel-org/nickel.rs#f3d194a8e43a1eb5f5ae660bcf2f7e2c3c6bcb39"
 dependencies = [
  "groupable 0.2.0 (registry+https://github.com/rust-lang/crates.io-index)",
  "hyper 0.8.1 (registry+https://github.com/rust-lang/crates.io-index)",

@@ -179,7 +179,6 @@ fn main() {
             }
         };
         if compiler_response.compilation_complete {
-            println!("{:?}", compiler_response);
             return;
         }
         sleep(Duration::from_secs(SECONDS_TO_SLEEP as u64));
