@@ -158,11 +158,15 @@ fn main() {
 			error_box = true;
 		}
 		let error_message = form_data.get("compilation-error-message").unwrap_or("Error");
+		let result = form_data.get("compiled-result").unwrap_or("");
 
 		// Update the submission in the DB..struggling with updating multiple fields.
 		let connection = establish_connection();
 		diesel::update(submissions.filter(submission_hash.eq(&hash)))
 			.set(compilation_complete.eq(complete_box))
+			.execute(&connection);
+		diesel::update(submissions.filter(submission_hash.eq(&hash)))
+			.set(compiled_result.eq(result))
 			.execute(&connection);
 		diesel::update(submissions.filter(submission_hash.eq(&hash)))
 			.set(compilation_error.eq(error_box))
