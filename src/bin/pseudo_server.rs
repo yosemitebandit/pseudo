@@ -13,10 +13,23 @@ use self::pseudo::schema::submissions::dsl::*;
 use self::diesel::prelude::*;
 
 
+// routes:
+//   GET  /               shows some info
+//   POST /               405
+//   GET  /compile        405
+//   POST /compile        creates a new submission -> JSON
+//   GET  /compile/<hash> gets info on a submission -> JSON or 404
+//   POST /compile/<hash> 405
+
+
 fn main() {
 	let mut server = Nickel::new();
 
-	server.post("/", middleware! { |request, response|
+	server.get("/", middleware! { |request, response|
+		"it's pseudo-lang!"
+	});
+
+	server.post("/compile", middleware! { |request, response|
 		let request = request.json_as::<CompilerRequest>().unwrap();
 		println!("received a submission with hash: {}", request.hash);
 		// See if we already have that hash in the DB.
@@ -34,7 +47,7 @@ fn main() {
 		"ok"
 	});
 
-	server.get("/:hash", middleware! { |request|
+	server.get("/compile/:hash", middleware! { |request|
 		println!("  GET for hash: {:?}", request.param("hash"));
 		let connection = establish_connection();
 		let results = submissions.filter(submission_hash.eq(request.param("hash").unwrap()))

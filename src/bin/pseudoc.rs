@@ -1,4 +1,5 @@
 extern crate crypto;
+extern crate dotenv;
 extern crate getopts;
 extern crate hyper;
 extern crate rustc_serialize;
@@ -14,11 +15,17 @@ use std::time::Duration;
 
 use crypto::md5::Md5;
 use crypto::digest::Digest;
+use dotenv::dotenv;
 use getopts::Options;
 use hyper::Client;
 use rustc_serialize::json;
 
 use pseudo::{CompilerRequest, CompilerResponse};
+
+
+const DEFAULT_BASE_URL: &'static str = "http://localhost:6767";
+const COMPILE_ROUTE: &'static str = "compile";
+const SECONDS_TO_SLEEP: i8 = 10;
 
 
 fn print_usage(program: &str, opts: Options) {
@@ -71,6 +78,13 @@ fn decode_response(response: &str) -> Result<CompilerResponse, String> {
 
 
 fn main() {
+    // Set the base url based on an env var or use the default.
+    dotenv().ok();
+    let base_url = match env::var("PSEUDO_BASE_URL") {
+        Ok(value) => value,
+        Err(_) => DEFAULT_BASE_URL.to_string(),
+    };
+
     // parse args
     let args: Vec<String> = env::args().collect();
     // get the path of the binary
@@ -137,7 +151,7 @@ fn main() {
         }
     };
 
-    let code_submission_url = "http://localhost:6767";
+    let code_submission_url = format!("{}/{}", &base_url, COMPILE_ROUTE);
     match post_json(&code_submission_url, &request) {
         Ok(_) => println!("request sent to the cloud compiler.."),
         Err(err) => {
@@ -147,8 +161,7 @@ fn main() {
     };
 
     // Poll for result..
-    let result_polling_base_url = "http://localhost:6767";
-    let result_polling_url = format!("{}/{}", result_polling_base_url, hash);
+    let result_polling_url = format!("{}/{}/{}", &base_url, COMPILE_ROUTE, hash);
     loop {
         let compiler_response = match http_get(&result_polling_url) {
             Ok(response) => {
@@ -169,9 +182,8 @@ fn main() {
             println!("{:?}", compiler_response);
             return;
         }
-        sleep(Duration::from_secs(10));
+        sleep(Duration::from_secs(SECONDS_TO_SLEEP as u64));
     }
-
 
 
     // save output
