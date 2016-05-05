@@ -6,7 +6,7 @@ the pseudo language
 
 
 #### usage
-First write some pseudcode, preferably in English.
+Write some pseudcode, preferably in English:
 
 ```
 $ cat primes.pseudo
@@ -58,19 +58,13 @@ $ ./primes
 If it fails to compile or run, please file an issue!
 
 
-#### gameplan
-* `pseudoc` sends the contents of the input file and the file's md5 to some endpoint,
-and then it periodically polls that endpoint for a compiled result
-* `pseudo_server` manages the compiler, receives the posted data and responds with results
-
-
 #### setup
 * you need a `.env` file -- see `.example.env`
 * run `diesel database setup` to build the databases and run migrations
 
 
 #### todo
-* set this up on my server
+* get this online
 * pw protection
 * verbose modes
 * maybe split up this repo so we can build `pseudoc` on appveyor?
