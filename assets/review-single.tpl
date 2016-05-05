@@ -31,7 +31,7 @@
 	<br />
 
 	<label for="compilation-error-message">error message:</label>
-	<input type="text" name="compilation-error-message" value="{{ submission.compilation_error_message }}">
+	<input type="text" name="compilation-error-message" value="{{ submission.compilation_error_message }}" size=80>
 	<br />
 
 	<input type="submit" formenctype="application/x-www-form-urlencoded" value="Save">
