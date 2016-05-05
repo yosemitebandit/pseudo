@@ -81,6 +81,7 @@ fn main() {
 		id: i32,
 		submitted_contents: String,
 		submitted_language: String,
+		submission_hash: String,
 	};
 
 	server.get("/review", middleware! { |_, response|
@@ -94,13 +95,37 @@ fn main() {
 				id: db_sub.id,
 				submitted_contents: db_sub.submitted_contents,
 				submitted_language: db_sub.submitted_language,
+				submission_hash: db_sub.submission_hash,
 			};
 			subs.push(new_sub);
 		}
 		let mut data = HashMap::new();
 		data.insert("submissions", subs);
-		println!("{:?}", data);
 		return response.render("assets/review-all.tpl", &data);
+	});
+
+	server.get("/review/:hash", middleware! { |request, response|
+		println!("  GET /review/{}", request.param("hash").unwrap());
+		let connection = establish_connection();
+		let results = submissions.filter(submission_hash.eq(request.param("hash").unwrap()))
+			.load::<Submission>(&connection)
+			.expect("error loading submissions matching hash");
+		if results.len() == 1 {
+			let db_sub = results[0].clone();
+			let new_sub = Sub {
+				id: db_sub.id,
+				submitted_contents: db_sub.submitted_contents,
+				submitted_language: db_sub.submitted_language,
+				submission_hash: db_sub.submission_hash,
+			};
+			let mut data = HashMap::new();
+			data.insert("submission", new_sub);
+			return response.render("assets/review-single.tpl", &data);
+		} else if results.len() == 0 {
+			"404"
+		} else {
+			"500"
+		}
 	});
 
 	server.listen("127.0.0.1:6767");
