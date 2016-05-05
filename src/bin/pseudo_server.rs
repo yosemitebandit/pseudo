@@ -4,6 +4,8 @@ extern crate rustc_serialize;
 
 extern crate pseudo;
 
+use std::collections::HashMap;
+
 use nickel::{Nickel, HttpRouter, JsonBody};
 use rustc_serialize::json;
 
@@ -20,16 +22,19 @@ use self::diesel::prelude::*;
 //   POST /compile        creates a new submission -> JSON
 //   GET  /compile/<hash> gets info on a submission -> JSON or 404
 //   POST /compile/<hash> 405
+//   GET  /review         shows list of submissions
+//   GET  /review/<hash>  view one submission and an edit form
+//   POST /review/<hash>  save work on a submission
 
 
 fn main() {
 	let mut server = Nickel::new();
 
-	server.get("/", middleware! { |request, response|
+	server.get("/", middleware! {
 		"it's pseudo-lang!"
 	});
 
-	server.post("/compile", middleware! { |request, response|
+	server.post("/compile", middleware! { |request|
 		let request = request.json_as::<CompilerRequest>().unwrap();
 		println!("received a submission with hash: {}", request.hash);
 		// See if we already have that hash in the DB.
@@ -69,7 +74,33 @@ fn main() {
 		} else {
 			"500".to_string()
 		}
+	});
 
+	#[derive(RustcEncodable, Debug)]
+	struct Sub {
+		id: i32,
+		submitted_contents: String,
+		submitted_language: String,
+	};
+
+	server.get("/review", middleware! { |_, response|
+		println!("  GET /review");
+		let connection = establish_connection();
+		let results = submissions.load::<Submission>(&connection)
+			.expect("error loading submissions for review");
+		let mut subs = Vec::new();
+		for db_sub in results {
+			let new_sub = Sub {
+				id: db_sub.id,
+				submitted_contents: db_sub.submitted_contents,
+				submitted_language: db_sub.submitted_language,
+			};
+			subs.push(new_sub);
+		}
+		let mut data = HashMap::new();
+		data.insert("submissions", subs);
+		println!("{:?}", data);
+		return response.render("assets/review-all.tpl", &data);
 	});
 
 	server.listen("127.0.0.1:6767");
