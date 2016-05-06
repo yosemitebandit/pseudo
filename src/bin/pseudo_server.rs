@@ -163,18 +163,8 @@ fn main() {
 		// Update the submission in the DB..struggling with updating multiple fields.
 		let connection = establish_connection();
 		diesel::update(submissions.filter(submission_hash.eq(&hash)))
-			.set(compilation_complete.eq(complete_box))
+			.set((compilation_complete.eq(complete_box), compiled_result.eq(result), compilation_error.eq(error_box), compilation_error_message.eq(error_message)))
 			.execute(&connection);
-		diesel::update(submissions.filter(submission_hash.eq(&hash)))
-			.set(compiled_result.eq(result))
-			.execute(&connection);
-		diesel::update(submissions.filter(submission_hash.eq(&hash)))
-			.set(compilation_error.eq(error_box))
-			.execute(&connection);
-		diesel::update(submissions.filter(submission_hash.eq(&hash)))
-			.set(compilation_error_message.eq(error_message))
-			.execute(&connection);
-
 		return response.redirect(format!("/review/{}", hash));
 	});
 
