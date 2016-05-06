@@ -101,6 +101,7 @@ fn main() {
     let mut opts = Options::new();
     opts.optopt("o", "output", "set output file name", "OUTPUT");
     opts.optopt("l", "language", "set output language", "LANGUAGE");
+    opts.optflag("v", "verbose", "show more info");
     opts.optflag("h", "help", "print this");
     let matches = match opts.parse(&args[1..]) {
         Ok(m) => m,
@@ -127,6 +128,7 @@ fn main() {
             return;
         }
     };
+    let verbose_mode = matches.opt_present("v");
     let input = if !matches.free.is_empty() {
         // Grab any 'free string fragments' if there are any -- this is the input FILE.
         matches.free[0].clone()
@@ -163,7 +165,7 @@ fn main() {
     let code_submission_url = format!("{}/{}", &base_url, COMPILE_ROUTE);
     match post_json(&code_submission_url, &request) {
         Ok(_) => {
-            //println!("request sent to the cloud compiler..")
+            if verbose_mode { println!("request sent to the cloud compiler.") }
         },
         Err(err) => {
             println!("Error: {}", err);
@@ -174,6 +176,7 @@ fn main() {
     // Poll for result.
     let result_polling_url = format!("{}/{}/{}", &base_url, COMPILE_ROUTE, hash);
     loop {
+        if verbose_mode { println!("checking the cloud compiler for a result..") }
         let compiler_response = match http_get(&result_polling_url) {
             Ok(response) => {
                 match decode_response(&response) {
@@ -197,7 +200,10 @@ fn main() {
             }
             // Save output.
             match write_file_contents(&output, &compiler_response.compiled_result) {
-                Ok(_) => return,
+                Ok(_) => {
+                    if verbose_mode { println!("saved result.") }
+                    return
+                },
                 Err(err) => {
                     println!("File save error: {}", err);
                     return
