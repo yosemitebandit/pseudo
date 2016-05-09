@@ -5,7 +5,8 @@ authors = ["Matt Ball <matt.ball.2@gmail.com>"]
 
 
 [dependencies]
-diesel = "0.6.1"
+#diesel = "0.6.1"
+diesel = { git = "https://github.com/diesel-rs/diesel" }
 diesel_codegen = { version = "0.6.1", default-features = false, features = ["nightly", "postgres"] }
 dotenv = "0.8.0"
 dotenv_macros = "0.8.0"

@@ -2,7 +2,7 @@
 name = "pseudo"
 version = "0.1.0"
 dependencies = [
- "diesel 0.6.1 (registry+https://github.com/rust-lang/crates.io-index)",
+ "diesel 0.6.1 (git+https://github.com/diesel-rs/diesel)",
  "diesel_codegen 0.6.1 (registry+https://github.com/rust-lang/crates.io-index)",
  "dotenv 0.8.0 (registry+https://github.com/rust-lang/crates.io-index)",
  "dotenv_macros 0.8.0 (registry+https://github.com/rust-lang/crates.io-index)",
@@ -41,6 +41,16 @@ dependencies = [
  "rustc-serialize 0.3.19 (registry+https://github.com/rust-lang/crates.io-index)",
  "time 0.1.35 (registry+https://github.com/rust-lang/crates.io-index)",
  "url 1.1.0 (registry+https://github.com/rust-lang/crates.io-index)",
+]
+
+[[package]]
+name = "diesel"
+version = "0.6.1"
+source = "git+https://github.com/diesel-rs/diesel#632e6eb32ef660ed4a8c9d2a3fb872b6c70b3383"
+dependencies = [
+ "byteorder 0.3.13 (registry+https://github.com/rust-lang/crates.io-index)",
+ "libc 0.2.11 (registry+https://github.com/rust-lang/crates.io-index)",
+ "pq-sys 0.2.1 (registry+https://github.com/rust-lang/crates.io-index)",
 ]
 
 [[package]]
