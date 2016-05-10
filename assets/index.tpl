@@ -16,7 +16,7 @@ You'll be off in no time: just write some pseudocode and run the compiler with y
 	<ul>
 		<li><a href='#'><code>pseudoc</code> for Ubuntu 14.04</a></li>
 		<li><a href='#'><code>pseudoc</code> for Mac OSX</a></li>
-		<li><i>Windows coming someday..</i></li>
+		<li><i>Windows someday..</i></li>
 	</ul>
 </div>
 
@@ -24,37 +24,48 @@ You'll be off in no time: just write some pseudocode and run the compiler with y
 <p>sending an SMS:</p>
 <pre>
 $ cat sms.pseudo
-$ ask the user for a number
-$ send an SMS to that number saying "hello!"
-$ leave some API details for me to fill in later..
-$
+ask the user for a number
+send an SMS to that number saying "hello!"
+leave some API details for me to fill in later..
+
 $ pseudoc sms.pseudo --output=sms.py --language=python
-$
+
 $ cat sms.py
-$ import sys
-$ from twilio.rest import TwilioRestClient
-$
-$ account = "AC123456"
-$ token = "zyxwvut"
-$ from_number = "+1555123456"
-$ client = TwilioRestClient(account, token)
-$
-$ to_number = sys.argv[1]
-$ client.messages.create(to=to_number, from_=from_number, body="hello!")
+import sys
+from twilio.rest import TwilioRestClient
+
+account = "AC123456"
+token = "zyxwvut"
+from_number = "+1555123456"
+client = TwilioRestClient(account, token)
+
+to_number = sys.argv[1]
+client.messages.create(to=to_number, from_=from_number, body="hello!")
 </pre>
 
 <p>downloading a file:</p>
 <pre>
 $ cat rainfall.pseudo
-$ download some rainfall data
-$ preferably as a CSV from NOAA
-$
+download some rainfall data
+preferably as a CSV from NOAA
+
 $ pseudoc rainfall.pseudo --output=rainfall.rs --language=rust
-$
+
 $ cat rainfall.rs
-$ fn main() {
-$ http://www1.ncdc.noaa.gov/pub/data/cdo/samples/PRECIP_HLY_sample_csv.csv
-$ }
+extern crate hyper;
+
+use std::io::prelude::*;
+use hyper::Client;
+
+const URL: &'static str = "http://www1.ncdc.noaa.gov/pub/data/cdo/samples/PRECIP_HLY_sample_csv.csv";
+
+fn main() {
+    let client = Client::new();
+    let mut response = client.get(URL).send().unwrap();
+    let mut body = String::new();
+    response.read_to_string(&mut body).unwrap();
+    println!("{}", body);
+}
 </pre>
 
 <p>drawing a picture:</p>
