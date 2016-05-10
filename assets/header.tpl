@@ -10,6 +10,9 @@
 				margin-left: auto;
 				margin-right: auto;
 			}
+			html {
+				font: 14px Helvetica, Arial, sans-serif;
+			}
 			body {
 				padding: 1em;
 			}
