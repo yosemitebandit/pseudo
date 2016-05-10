@@ -1,5 +1,4 @@
 {{> header }}
-{{> top-bar }}
 
 {{#submissions}}
 <p><a href="/review/{{ submission_hash }}">
@@ -11,4 +10,5 @@
 <br />
 {{/submissions}}
 
+{{> link-bar }}
 {{> footer }}

@@ -1,5 +1,4 @@
 {{> header }}
-{{> top-bar }}
 
 <p>#{{ submission.id }} -- {{ submission.submitted_language }}</p>
 <textarea cols=80 rows=20 disabled>{{ submission.submitted_contents }}</textarea>
@@ -41,4 +40,5 @@
 	<input type="submit" formenctype="application/x-www-form-urlencoded" value="Save">
 </form>
 
+{{> link-bar }}
 {{> footer }}
