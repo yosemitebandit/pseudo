@@ -24,7 +24,7 @@ use rustc_serialize::json;
 use pseudo::{CompilerRequest, CompilerResponse, print_usage};
 
 
-const DEFAULT_ENDPOINT: &'static str = "pseudo-lang.oakmachine.com";
+const DEFAULT_ENDPOINT: &'static str = "http://pseudo-lang.oakmachine.com";
 const COMPILE_ROUTE: &'static str = "compile";
 const SECONDS_TO_SLEEP: i8 = 10;
 
