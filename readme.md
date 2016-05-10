@@ -58,17 +58,13 @@ $ ./primes
 If it fails to compile or run, please file an issue!
 
 
-#### setup
+#### building and testing locally
+* need to pin to a specific nightly: `multirust override nightly-2016-04-09`
 * you need a `.env` file -- see `.example.env`
 * run `diesel database setup` to build the databases and run migrations
-
-
-#### building
-* need to pin to a specific nightly: `multirust override nightly-2016-04-09`
 
 
 #### todo
 * get this online
 * delay in token check
-* more use of env vars
 * maybe split up this repo so we can build `pseudoc` on appveyor?

@@ -24,7 +24,7 @@ use rustc_serialize::json;
 use pseudo::{CompilerRequest, CompilerResponse, print_usage};
 
 
-const DEFAULT_BASE_URL: &'static str = "http://localhost:6767";
+const DEFAULT_ENDPOINT: &'static str = "pseudo-lang.oakmachine.com";
 const COMPILE_ROUTE: &'static str = "compile";
 const SECONDS_TO_SLEEP: i8 = 10;
 
@@ -83,9 +83,9 @@ fn write_file_contents(output_path: &str, contents: &str) -> Result<String, Stri
 fn main() {
     // Set the base url based on an env var or use the default.
     dotenv().ok();
-    let base_url = match env::var("PSEUDO_BASE_URL") {
+    let base_url = match env::var("PSEUDOC_ENDPOINT") {
         Ok(value) => value,
-        Err(_) => DEFAULT_BASE_URL.to_string(),
+        Err(_) => DEFAULT_ENDPOINT.to_string(),
     };
 
     // Parse args.

@@ -22,6 +22,7 @@ use self::diesel::prelude::*;
 
 
 const DEFAULT_SECRET_TOKEN: &'static str = "top secret!";
+const DEFAULT_HOST_AND_PORT: &'static str = "127.0.0.1:5000";
 
 
 // routes:
@@ -212,5 +213,9 @@ fn main() {
 		return response.redirect(format!("/review/{}", hash));
 	});
 
-	server.listen("127.0.0.1:6767");
+	let host_and_port = match env::var("PSEUDO_SERVER_HOST_AND_PORT") {
+		Ok(value) => value.to_string(),
+		Err(_) => DEFAULT_HOST_AND_PORT.to_string(),
+	};
+	server.listen(&host_and_port[..]);
 }
