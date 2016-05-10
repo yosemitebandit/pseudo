@@ -63,6 +63,10 @@ If it fails to compile or run, please file an issue!
 * run `diesel database setup` to build the databases and run migrations
 
 
+#### building
+* need to pin to a specific nightly: `multirust override nightly-2016-04-09`
+
+
 #### todo
 * get this online
 * maybe split up this repo so we can build `pseudoc` on appveyor?
