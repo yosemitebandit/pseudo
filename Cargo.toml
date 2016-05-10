@@ -12,6 +12,7 @@ dotenv_macros = "0.8.0"
 getopts = "*"
 hyper = "*"
 nickel = { git = "https://github.com/nickel-org/nickel.rs" }
+rand = "*"
 rust-crypto = "*"
 rustc-serialize = "*"
 url = "*"

@@ -2,17 +2,21 @@ extern crate diesel;
 extern crate dotenv;
 extern crate getopts;
 #[macro_use] extern crate nickel;
+extern crate rand;
 extern crate rustc_serialize;
 
 extern crate pseudo;
 
 use std::collections::HashMap;
 use std::env;
+use std::thread::sleep;
+use std::time::Duration;
 
 use dotenv::dotenv;
 use getopts::Options;
 use nickel::{Nickel, HttpRouter, JsonBody, FormBody};
 use nickel::extensions::{Redirect};
+use rand::Rng;
 use rustc_serialize::json;
 
 use self::pseudo::*;
@@ -189,6 +193,8 @@ fn main() {
 
 		let form_data = try_with!(response, request.form_body());
 		let token = form_data.get("token").unwrap_or("");
+		let seconds_to_sleep = rand::thread_rng().gen_range(1f64, 5f64);
+		sleep(Duration::from_secs(seconds_to_sleep as u64));
 		if token != secret_token {
 			if verbose_mode { println!("unauthorized edit attempted for hash {}", hash) }
 			return response.redirect(format!("/review/{}", hash));
