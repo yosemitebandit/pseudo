@@ -13,11 +13,11 @@ You'll be off in no time: just write some pseudocode and run the compiler with y
 
 <h4>Downloads</h4>
 <div id='downloads'>
-	<ul>
-		<li><a href='#'><code>pseudoc</code> for Ubuntu 14.04</a></li>
-		<li><a href='#'><code>pseudoc</code> for Mac OSX</a></li>
-		<li><i>Windows someday..</i></li>
-	</ul>
+        <ul>
+                <li><a href='#'><code>pseudoc</code> for Ubuntu 14.04</a></li>
+                <li><a href='#'><code>pseudoc</code> for Mac OSX</a></li>
+                <li><i>Windows someday..</i></li>
+        </ul>
 </div>
 
 <h4>Examples</h4>
