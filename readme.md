@@ -58,8 +58,8 @@ $ ./primes
 If it fails to compile or run, please file an issue!
 
 
-#### building and testing the server and compiler
-* pin rust to a specific nightly, build and setup the database:
+#### building the server and compiler locally
+* pin rust to a specific nightly, then build and setup the database:
 
 ```
 $ multirust override nightly-2016-04-09`
@@ -67,7 +67,7 @@ $ cargo build
 $ diesel database setup
 ```
 
-* for testing you may want to create a `.env` file -- see `.example.env`
+* to try this out locally you need a `.env` file -- see `.example.env`
 
 
 #### todo
