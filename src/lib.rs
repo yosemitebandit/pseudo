@@ -6,11 +6,13 @@ pub mod models;
 
 #[macro_use] extern crate diesel;
 extern crate dotenv;
+extern crate getopts;
 extern crate rustc_serialize;
 
 use diesel::prelude::*;
 use diesel::pg::PgConnection;
 use dotenv::dotenv;
+use getopts::Options;
 use std::env;
 
 use self::models::{Submission, NewSubmission};
@@ -56,4 +58,10 @@ pub fn create_submission<'a>(connection: &PgConnection, contents: &'a str, langu
 	diesel::insert(&new_submission).into(submissions::table)
 		.get_result(connection)
 		.expect("error saving new submission")
+}
+
+
+pub fn print_usage(program: &str, opts: Options) {
+	let brief = format!("Usage: {} FILE [options]", program);
+	print!("{}", opts.usage(&brief));
 }

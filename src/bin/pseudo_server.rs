@@ -1,5 +1,6 @@
 extern crate diesel;
 extern crate dotenv;
+extern crate getopts;
 #[macro_use] extern crate nickel;
 extern crate rustc_serialize;
 
@@ -9,6 +10,7 @@ use std::collections::HashMap;
 use std::env;
 
 use dotenv::dotenv;
+use getopts::Options;
 use nickel::{Nickel, HttpRouter, JsonBody, FormBody};
 use nickel::extensions::{Redirect};
 use rustc_serialize::json;
@@ -35,23 +37,45 @@ const DEFAULT_SECRET_TOKEN: &'static str = "top secret!";
 
 
 fn main() {
+	// Load the .env file, looking for the secret token.
 	dotenv().ok();
 	let secret_token = match env::var("SECRET_TOKEN") {
 		Ok(value) => value,
 		Err(_) => DEFAULT_SECRET_TOKEN.to_string(),
 	};
 
+	// Get the command line args.
+	let args: Vec<String> = env::args().collect();
+	let program = args[0].clone();
+	let mut opts = Options::new();
+	opts.optflag("v", "verbose", "show more info");
+	opts.optflag("h", "help", "print this");
+	let matches = match opts.parse(&args[1..]) {
+		Ok(m) => m,
+		Err(err) => {
+			println!("Error: {}", err);
+			return;
+		}
+	};
+	if matches.opt_present("h") {
+		print_usage(&program, opts);
+		return
+	}
+	let verbose_mode = matches.opt_present("v");
+
+	// Setup the server and routes.
 	let mut server = Nickel::new();
 
 	server.get("/", middleware! { |_, response|
+		if verbose_mode { println!("GET /") }
 		let mut data = HashMap::new();
-		data.insert("submissions", "");
+		data.insert("placeholder", "");
 		return response.render("assets/index.tpl", &data);
 	});
 
 	server.post("/compile", middleware! { |request|
 		let compiler_request = request.json_as::<CompilerRequest>().unwrap();
-		//println!("received a submission with hash: {}", compiler_request.hash);
+		if verbose_mode { println!("POST to /compile with hash: {}", compiler_request.hash) }
 		// See if we already have that hash in the DB.
 		let connection = establish_connection();
 		let results = submissions.filter(submission_hash.eq(&compiler_request.hash))
@@ -60,23 +84,22 @@ fn main() {
 		// If there are no results, create a new submission in the DB.
 		if results.len() == 0 {
 			let submission = create_submission(&connection, &compiler_request.contents, &compiler_request.language, &compiler_request.hash);
-			//println!("saved submission with id {}.", submission.id);
+			if verbose_mode { println!("saved submission with id {}.", submission.id) }
 		} else {
-			//println!("already have submission with hash {}", &compiler_request.hash)
+			if verbose_mode { println!("already have submission with hash {}", &compiler_request.hash) }
 		}
 		"ok"
 	});
 
 	server.get("/compile/:hash", middleware! { |request|
-		//println!("  GET for hash: {:?}", request.param("hash"));
 		let connection = establish_connection();
 		let results = submissions.filter(submission_hash.eq(request.param("hash").unwrap()))
 			.load::<Submission>(&connection)
 			.expect("error loading submissions matching hash");
 
 		if results.len() == 1 {
+			if verbose_mode { println!("GET /compile/{:?}", request.param("hash")) }
 			let submission = results[0].clone();
-			//println!("{:?}", submission);
 			let compiler_response = CompilerResponse {
 				compilation_complete: submission.compilation_complete,
 				compiled_result: submission.compiled_result.unwrap_or("".to_string()),
@@ -86,14 +109,16 @@ fn main() {
 			let encoded = json::encode(&compiler_response).unwrap();
 			encoded
 		} else if results.len() == 0 {
+			if verbose_mode { println!("GET /compile/{:?} -> 404", request.param("hash")) }
 			"404".to_string()
 		} else {
+			if verbose_mode { println!("GET /compile/{:?} -> 500", request.param("hash")) }
 			"500".to_string()
 		}
 	});
 
 	#[derive(RustcEncodable, Debug)]
-	struct Sub {
+	struct SubmissionFormData {
 		id: i32,
 		submitted_contents: String,
 		submitted_language: String,
@@ -105,13 +130,13 @@ fn main() {
 	};
 
 	server.get("/review", middleware! { |_, response|
-		//println!("  GET /review");
+		if verbose_mode { println!("GET /review") }
 		let connection = establish_connection();
 		let results = submissions.load::<Submission>(&connection)
 			.expect("error loading submissions for review");
 		let mut subs = Vec::new();
 		for db_sub in results {
-			let new_sub = Sub {
+			let new_sub = SubmissionFormData {
 				id: db_sub.id,
 				submitted_contents: db_sub.submitted_contents,
 				submitted_language: db_sub.submitted_language,
@@ -129,14 +154,14 @@ fn main() {
 	});
 
 	server.get("/review/:hash", middleware! { |request, response|
-		//println!("  GET /review/{}", request.param("hash").unwrap());
 		let connection = establish_connection();
 		let results = submissions.filter(submission_hash.eq(request.param("hash").unwrap()))
 			.load::<Submission>(&connection)
 			.expect("error loading submissions matching hash");
 		if results.len() == 1 {
+			if verbose_mode { println!("GET /review/{}", request.param("hash").unwrap()) }
 			let db_sub = results[0].clone();
-			let sub = Sub {
+			let sub = SubmissionFormData {
 				id: db_sub.id,
 				submitted_contents: db_sub.submitted_contents,
 				submitted_language: db_sub.submitted_language,
@@ -150,8 +175,10 @@ fn main() {
 			data.insert("submission", sub);
 			return response.render("assets/review-single.tpl", &data);
 		} else if results.len() == 0 {
+			if verbose_mode { println!("GET /review/{} => 404", request.param("hash").unwrap()) }
 			"404"
 		} else {
+			if verbose_mode { println!("GET /review/{} => 500", request.param("hash").unwrap()) }
 			"500"
 		}
 	});
@@ -162,10 +189,9 @@ fn main() {
 		let form_data = try_with!(response, request.form_body());
 		let token = form_data.get("token").unwrap_or("");
 		if token != secret_token {
-			//println!("unauthorized edit attempted");
+			if verbose_mode { println!("unauthorized edit attempted for hash {}", hash) }
 			return response.redirect(format!("/review/{}", hash));
 		}
-		//println!("{:?}", form_data);
 		let mut complete_box = false;
 		if form_data.get("compilation-complete").unwrap_or("off") == "on" {
 			complete_box = true;
@@ -176,6 +202,7 @@ fn main() {
 		}
 		let error_message = form_data.get("compilation-error-message").unwrap_or("Error");
 		let result = form_data.get("compiled-result").unwrap_or("");
+		if verbose_mode { println!("POST /review/{}", hash) }
 
 		// Update the submission in the DB.
 		let connection = establish_connection();

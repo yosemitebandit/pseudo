@@ -21,18 +21,12 @@ use getopts::Options;
 use hyper::Client;
 use rustc_serialize::json;
 
-use pseudo::{CompilerRequest, CompilerResponse};
+use pseudo::{CompilerRequest, CompilerResponse, print_usage};
 
 
 const DEFAULT_BASE_URL: &'static str = "http://localhost:6767";
 const COMPILE_ROUTE: &'static str = "compile";
 const SECONDS_TO_SLEEP: i8 = 10;
-
-
-fn print_usage(program: &str, opts: Options) {
-    let brief = format!("Usage: {} FILE [options]", program);
-    print!("{}", opts.usage(&brief));
-}
 
 
 fn get_file_contents(input_path: &str) -> Result<String, String> {
