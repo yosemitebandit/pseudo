@@ -65,6 +65,5 @@ If it fails to compile or run, please file an issue!
 
 #### todo
 * get this online
-* pw protection
 * verbose modes
 * maybe split up this repo so we can build `pseudoc` on appveyor?

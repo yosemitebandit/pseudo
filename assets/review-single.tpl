@@ -34,6 +34,10 @@
 	<input type="text" name="compilation-error-message" value="{{ submission.compilation_error_message }}" size=80>
 	<br />
 
+	<label for="token">token:</label>
+	<input type="password" name="token">
+	<br />
+
 	<input type="submit" formenctype="application/x-www-form-urlencoded" value="Save">
 </form>
 

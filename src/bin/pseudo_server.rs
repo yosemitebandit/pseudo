@@ -1,11 +1,14 @@
 extern crate diesel;
+extern crate dotenv;
 #[macro_use] extern crate nickel;
 extern crate rustc_serialize;
 
 extern crate pseudo;
 
 use std::collections::HashMap;
+use std::env;
 
+use dotenv::dotenv;
 use nickel::{Nickel, HttpRouter, JsonBody, FormBody};
 use nickel::extensions::{Redirect};
 use rustc_serialize::json;
@@ -14,6 +17,9 @@ use self::pseudo::*;
 use self::pseudo::models::*;
 use self::pseudo::schema::submissions::dsl::*;
 use self::diesel::prelude::*;
+
+
+const DEFAULT_SECRET_TOKEN: &'static str = "top secret!";
 
 
 // routes:
@@ -29,6 +35,12 @@ use self::diesel::prelude::*;
 
 
 fn main() {
+	dotenv().ok();
+	let secret_token = match env::var("SECRET_TOKEN") {
+		Ok(value) => value,
+		Err(_) => DEFAULT_SECRET_TOKEN.to_string(),
+	};
+
 	let mut server = Nickel::new();
 
 	server.get("/", middleware! { |_, response|
@@ -148,6 +160,11 @@ fn main() {
 		let hash = request.param("hash").unwrap().to_owned();
 
 		let form_data = try_with!(response, request.form_body());
+		let token = form_data.get("token").unwrap_or("");
+		if token != secret_token {
+			//println!("unauthorized edit attempted");
+			return response.redirect(format!("/review/{}", hash));
+		}
 		//println!("{:?}", form_data);
 		let mut complete_box = false;
 		if form_data.get("compilation-complete").unwrap_or("off") == "on" {
