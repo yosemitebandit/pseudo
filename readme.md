@@ -65,6 +65,6 @@ If it fails to compile or run, please file an issue!
 
 
 #### todo
-* get this online
 * delay in token check
+* better homepage
 * maybe split up this repo so we can build `pseudoc` on appveyor?
