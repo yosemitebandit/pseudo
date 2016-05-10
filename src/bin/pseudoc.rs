@@ -189,7 +189,8 @@ fn main() {
         if compiler_response.compilation_complete {
             // Show any errors.
             if compiler_response.error {
-                println!("Compiler error: {}", compiler_response.error_message);
+                if verbose_mode { println!("Compiler error:") }
+                println!("{}", compiler_response.error_message);
                 return;
             }
             // Save output.
