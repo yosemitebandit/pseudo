@@ -21,7 +21,7 @@ You'll be off in no time: just write some pseudocode and run the compiler with y
 
                 </li>
                 <li><a href='https://github.com/yosemitebandit/pseudo/releases/download/v0.2.0/pseudoc-mac-osx'><code>pseudoc</code> for Mac OSX</a></li>
-                <li><i>Windows..someday..</i></li>
+                <li><i>pseudoc for Windows..someday</i></li>
         </ul>
 </div>
 
