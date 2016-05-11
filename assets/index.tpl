@@ -26,6 +26,23 @@ You'll be off in no time: just write some pseudocode and run the compiler with y
 </div>
 
 
+<h4>Documentation</h4>
+<p>
+Express your ideas clearly, and preferably in English.
+For example:
+</p>
+<pre>
+for numbers less than 100
+  if the number is prime, print it
+  and if the number is 2, print "woo!" because that's my lucky number
+</pre>
+<p>
+That's all there is to it!
+<code>pseudo</code> has a uniquely flexible and forgiving syntax
+with no required types and largely optional grammar.
+</p>
+
+
 <h4>Examples</h4>
 <p>sending an SMS with python:</p>
 <pre>
