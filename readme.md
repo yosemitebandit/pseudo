@@ -71,5 +71,4 @@ $ diesel database setup
 
 
 #### todo
-* better homepage
 * maybe split up this repo so we can build `pseudoc` on appveyor?
