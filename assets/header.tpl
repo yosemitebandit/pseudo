@@ -32,6 +32,9 @@
 			#downloads ul {
 				padding-left: 2em;
 			}
+			#link-bar {
+				margin-top: 3em;
+			}
 			#link-bar ul > li {
 				display: inline-block;
 				padding-left: 1em;
