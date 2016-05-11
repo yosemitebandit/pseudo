@@ -21,10 +21,6 @@
 			}
 			pre {
 				margin: 2em;
-				font-size: 110%;
-			}
-			code {
-				font-size: 110%;
 			}
 			ul {
 				padding: 0;
