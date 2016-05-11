@@ -16,11 +16,11 @@ You'll be off in no time: just write some pseudocode and run the compiler with y
 <div id='downloads'>
         <ul>
                 <li>
-                    <a href='https://github.com/yosemitebandit/pseudo/releases/download/v0.1.0/pseudoc-trusty'><code>pseudoc</code> for Ubuntu 14.04</a> --
+                    <a href='https://github.com/yosemitebandit/pseudo/releases/download/v0.2.0/pseudoc-trusty'><code>pseudoc</code> for Ubuntu 14.04</a> --
                     you may also need to <code>apt-get install libpq5</code>
 
                 </li>
-                <li><a href='https://github.com/yosemitebandit/pseudo/releases/download/v0.1.0/pseudoc-mac-osx'><code>pseudoc</code> for Mac OSX</a></li>
+                <li><a href='https://github.com/yosemitebandit/pseudo/releases/download/v0.2.0/pseudoc-mac-osx'><code>pseudoc</code> for Mac OSX</a></li>
                 <li><i>Windows..someday..</i></li>
         </ul>
 </div>
