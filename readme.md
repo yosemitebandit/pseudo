@@ -72,3 +72,10 @@ $ diesel database setup
 
 #### todo
 * maybe split up this repo so we can build `pseudoc` on appveyor?
+
+
+#### ops
+* server: adjust via `sudo service pseudo-lang-<PORT> restart`
+  * there's an nginx config in `sites-available` ..check that out for the `<PORT>`
+  * logs are in `/var/log`
+* your `.env` file is important..check it out before you compile
